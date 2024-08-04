@@ -36,9 +36,9 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 		this.plugin.settings.destinationNotes.forEach((destination, index) => {
 			new Setting(containerEl)
 				.setClass('task-mover-destination-note-container')
-				.addSearch((callback) => {
-					new FileSuggest(this.app, callback.inputEl);
-					callback.setPlaceholder('Note')
+				.addSearch((search) => {
+					new FileSuggest(this.app, search.inputEl);
+					search.setPlaceholder('Note')
 						.setValue(destination.path)
 						.onChange(async (path: string) => {
 							const original: DestinationNote = this.plugin.settings.destinationNotes[index];
@@ -64,8 +64,9 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						}), 250, true)
 				})
-				.addExtraButton((callback) => {
-					callback.setIcon('cross')
+				.addExtraButton((button) => {
+					button
+						.setIcon('cross')
 						.setTooltip('Delete')
 						.onClick(async () => {
 							this.plugin.settings.destinationNotes.splice(index, 1);
