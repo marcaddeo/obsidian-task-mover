@@ -33,6 +33,29 @@ export default class TaskMoverPlugin extends Plugin {
 			});
 		})
 
+		this.registerEvent(this.app.workspace.on('editor-menu', (menu) => {
+			const destinations = this.settings.destinationNotes
+				.filter((destination) => destination.showInEditorContextMenu);
+			if (!destinations.length) {
+				return;
+			}
+
+			menu.addSeparator();
+			for (const destination of destinations) {
+				menu.addItem((item) => {
+					item
+						.setTitle(`Move task to ${destination.name}`)
+						.onClick(async () => {
+							const view: MarkdownView = this.app.workspace
+								.getActiveViewOfType(MarkdownView);
+							const file: TFile = this.app.vault
+								.getFileByPath(destination.path);
+							this.apiV1.moveTaskToNote(view, file);
+						});
+				});
+			}
+		}))
+
 		this.addSettingTab(new TaskMoverSettingsTab(this.app, this));
 	}
 

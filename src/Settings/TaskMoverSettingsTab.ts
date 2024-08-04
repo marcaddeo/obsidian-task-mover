@@ -64,6 +64,16 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						}), 250, true)
 				})
+				.addToggle((toggle) => {
+					toggle
+						.setTooltip('Show in editor context menu')
+						.setValue(this.plugin.settings.destinationNotes[index].showInEditorContextMenu)
+						.onChange(async (showInEditorContextMenu) => {
+							this.plugin.settings.destinationNotes[index].showInEditorContextMenu = showInEditorContextMenu;
+							await this.plugin.saveSettings();
+						})
+					;
+				})
 				.addExtraButton((button) => {
 					button
 						.setIcon('cross')
