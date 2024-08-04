@@ -1,5 +1,5 @@
 import type { App, TFile } from 'obsidian';
-import { normalizePath, MarkdownView } from 'obsidian';
+import { normalizePath, MarkdownView, Notice } from 'obsidian';
 import { customAlphabet } from 'nanoid';
 
 function* taskToFileLineStringWithChildren(task: object): Generator<string> {
@@ -21,7 +21,7 @@ export const moveTaskToNote = async (app: App, view: MarkdownView, destination: 
 	const tasks: Array<object> = app.plugins.plugins['obsidian-tasks-plugin'].getTasks();
 	const task: object = tasks[tasks.findIndex(t => t.file.path === activeFilePath && t.lineNumber === lineNumber)];
 	if (!task) {
-		console.log("Error finding the task.")
+		new Notice('Error finding task on current line');
 		return;
 	}
 	
