@@ -18,9 +18,19 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 
 		containerEl.createEl('h1', { text: 'Task Mover Settings' });
 
+		containerEl.createEl('p', {
+			text: 'Task Mover will add commands to the command palette, and optionally the editor context menu, to move tasks to each destination note entered below.' ,
+		});
+		containerEl.createEl('p', {
+			text: 'When a Task Mover command is executed, the task currently under the cursor and any child tasks will be moved to the bottom of the selected Destination Note.',
+		});
+		containerEl.createEl('p', {
+			text: 'When a task is moved, a backlink to the moved task is left in its place.',
+		});
+
 		new Setting(containerEl)
 			.setName('Destination Notes')
-			.setDesc('Configure which notes will be available as quick move targets.')
+			.setDesc('Configure which notes will be available as move destinations. The Destination Name field can be overridden to customize the move command in the palette. Each Desination Note can optionally be displayed in the editor context menu as well.')
 			.addButton((button: ButtonComponent) => {
 				button
 					.setTooltip('Add destination note')
