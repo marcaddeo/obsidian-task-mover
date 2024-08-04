@@ -27,7 +27,8 @@ export default class TaskMoverPlugin extends Plugin {
 				id: `move-task-to-${slug}`,
 				name: `Move task to ${destination.name} (MTT ${destination.name})`,
 				editorCallback: (editor: Editor, view: MarkdownView) => {
-					const file: TFile = app.vault.getFileByPath(destination.path);
+					const file: TFile = this.app.vault
+						.getFileByPath(destination.path);
 					this.apiV1.moveTaskToNote(view, file);
 				}
 			});
@@ -63,7 +64,11 @@ export default class TaskMoverPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData(),
+		);
 	}
 
 	async saveSettings() {
