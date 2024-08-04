@@ -55,7 +55,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 							const name: string = original.name?.length ? original.name : app.vault.getFileByPath(path).basename;
 
 							this.plugin.settings.destinationNotes[index] =
-							{ ...original, ...{ path: path, name: name } };
+								{ ...original, ...{ path: path, name: name } };
 
 							await this.plugin.saveSettings();
 							return this.display();
