@@ -1,4 +1,5 @@
 import { Editor, MarkdownView, Plugin, TFile } from 'obsidian';
+import GithubSlugger from 'github-slugger'
 import { TaskMoverPluginSettings } from './Settings/settings';
 import { TaskMoverSettingsTab } from './Settings/TaskMoverSettingsTab'
 import { DEFAULT_SETTINGS } from 'types';
@@ -7,6 +8,7 @@ import { TaskMoverApiV1 } from './Api/TaskMoverApiV1';
 
 export default class TaskMoverPlugin extends Plugin {
 	settings: TaskMoverPluginSettings;
+	slugger: GithubSlugger;
 
 	get apiV1(): TaskMoverApiV1 {
 		return taskMoverApiV1(this.app);
@@ -15,12 +17,15 @@ export default class TaskMoverPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		this.slugger = new GithubSlugger();
+
 		// Add a 'Move Task to ___' command for each destination note.
 		this.settings.destinationNotes.forEach((destination: string, index: Number) => {
+			const slug = this.slugger.slug(destination.name);
+
 			this.addCommand({
-				// @TODO this should have a slug for the destination note instead.
-				id: `task-mover-move-task-to-${index}`,
-				name: `Move task to ${destination.name}`,
+				id: `move-task-to-${slug}`,
+				name: `Move task to ${destination.name} (MTT ${destination.name})`,
 				editorCallback: (editor: Editor, view: MarkdownView) => {
 					const file: TFile = app.vault.getFileByPath(destination.path);
 					this.apiV1.moveTaskToNote(view, file);
