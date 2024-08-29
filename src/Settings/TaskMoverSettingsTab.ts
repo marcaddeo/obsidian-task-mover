@@ -25,7 +25,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 			text: 'When a Task Mover command is executed, the task currently under the cursor and any child tasks will be moved to the bottom of the selected Destination Note.',
 		});
 		containerEl.createEl('p', {
-			text: 'When a task is moved, a backlink to the moved task is left in its place.',
+			text: 'When a task is moved, a block link to the moved task is left in its place.',
 		});
 
 		new Setting(containerEl)

@@ -26,27 +26,25 @@ export const moveTaskToNote = async (app: App, view: MarkdownView, destination: 
 	}
 	
 	const normalizedPath: string = await normalizePath(destination.path);
-	const backlinkRef: string = customAlphabet('abcdefghijklmnopqrstuvwz0123456789', 6)();
+	const blockLinkRef: string = customAlphabet('abcdefghijklmnopqrstuvwz0123456789', 6)();
+	// Append the block link reference onto the original task.
+	task.blockLink = ` ^${blockLinkRef}`;
 
 	// Generate markdown to append to destination file.
 	let taskStrings: Array<string> = [...taskToFileLineStringWithChildren(task)];
 	// Remove the first level of indentation from every task.
 	taskStrings = taskStrings.map(taskString => taskString.replace(task.indentation, ''));
-	// Append the backlink reference onto the first task in the list.
-	// @TODO there's apparently a Task.blockLink property that we may just be
-	// able to set on the original task instead 
-	taskStrings[0] = `${taskStrings[0]} ^${backlinkRef}`;
 
 	// Append task(s) to destination file.
 	await app.vault.adapter.append(normalizedPath, ['', ...taskStrings].join('\n'));
 
-	// Construct a backlink to the parent task in the destination file.
+	// Construct a block link to the parent task in the destination file.
 	const linktext: string = app.metadataCache.fileToLinktext(destination, normalizedPath);
-	const backLink: string = `${task.indentation}${task.listMarker} [[${linktext}#^${backlinkRef}|${task.description}]]\n`;
+	const blockLink: string = `${task.indentation}${task.listMarker} [[${linktext}#^${blockLinkRef}|${task.description}]]\n`;
 
-	// Replace tasks(s) on current line with the backlink to the task(s) in the destination file.
+	// Replace tasks(s) on current line with the block link to the task(s) in the destination file.
 	view.editor.replaceRange(
-		backLink,
+		blockLink,
 		{ line: lineNumber, ch: 0 },
 		{ line: (task.children.length ? task.children.at(-1).lineNumber : lineNumber) + 1, ch: 0 }
 	);
