@@ -33,6 +33,8 @@ export const moveTaskToNote = async (app: App, view: MarkdownView, destination: 
 	// Remove the first level of indentation from every task.
 	taskStrings = taskStrings.map(taskString => taskString.replace(task.indentation, ''));
 	// Append the backlink reference onto the first task in the list.
+	// @TODO there's apparently a Task.blockLink property that we may just be
+	// able to set on the original task instead 
 	taskStrings[0] = `${taskStrings[0]} ^${backlinkRef}`;
 
 	// Append task(s) to destination file.
