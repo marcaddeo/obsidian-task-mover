@@ -5,6 +5,7 @@ import { TaskMoverSettingsTab } from './Settings/TaskMoverSettingsTab'
 import { DEFAULT_SETTINGS } from 'types';
 import { taskMoverApiV1 } from './Api';
 import { TaskMoverApiV1 } from './Api/TaskMoverApiV1';
+import GenericSuggester from './ui/GenericSuggester';
 
 export default class TaskMoverPlugin extends Plugin {
 	settings: TaskMoverPluginSettings;
@@ -33,6 +34,27 @@ export default class TaskMoverPlugin extends Plugin {
 				}
 			});
 		})
+
+		this.addCommand({
+			id: 'move-task-to-file',
+			name: `Move task to ... (MTTF)`,
+			editorCallback: async (editor: Editor, view: MarkdownView) => {
+				const currentFile = this.app.workspace.getActiveFile();
+				const files: TFile[] = this.app.vault.getMarkdownFiles();
+				const file: TFile = await GenericSuggester.Suggest(
+					this.app,
+					files.map(file => {
+						const link = this.app.fileManager.generateMarkdownLink(
+							file,
+							currentFile.path
+						);
+						return link.substring(2, link.length - 2);
+					}),
+					files,
+				);
+				this.apiV1.moveTaskToNote(view, file);
+			}
+		});
 
 		this.registerEvent(this.app.workspace.on('editor-menu', (menu) => {
 			const destinations = this.settings.destinationNotes
