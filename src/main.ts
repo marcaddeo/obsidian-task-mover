@@ -1,8 +1,7 @@
 import { Editor, MarkdownView, Plugin, TFile } from 'obsidian';
 import GithubSlugger from 'github-slugger'
-import { TaskMoverPluginSettings } from './Settings/settings';
 import { TaskMoverSettingsTab } from './Settings/TaskMoverSettingsTab'
-import { DEFAULT_SETTINGS, type DestinationNote } from 'types';
+import { DEFAULT_SETTINGS, type DestinationNote, type TaskMoverPluginSettings } from 'types';
 import { taskMoverApiV1 } from './Api';
 import { TaskMoverApiV1 } from './Api/TaskMoverApiV1';
 import { getTaskUnderCursor } from './Api/moveTaskToNote';
@@ -22,15 +21,15 @@ export default class TaskMoverPlugin extends Plugin {
 		this.slugger = new GithubSlugger();
 
 		// Add a 'Move Task to ___' command for each destination note.
-		this.settings.destinationNotes.forEach((destination: DestinationNote, index: Number) => {
+		this.settings.destinationNotes.forEach((destination: DestinationNote) => {
 			const slug = this.slugger.slug(destination.name);
 
 			this.addCommand({
 				id: `move-task-to-${slug}`,
 				name: `Move task to ${destination.name} (MTT ${destination.name})`,
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView): boolean =>  {
+				editorCheckCallback: (checking: boolean, _: Editor, view: MarkdownView): boolean => {
 					const task = getTaskUnderCursor(this.app, view);
-					
+
 					if (task) {
 						if (!checking) {
 							this.moveTaskToNoteDestination(destination, view);
@@ -47,7 +46,7 @@ export default class TaskMoverPlugin extends Plugin {
 		this.addCommand({
 			id: 'move-task-to-file',
 			name: 'Move task to ... (MTTF)',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView): boolean => {
+			editorCheckCallback: (checking: boolean, _: Editor, view: MarkdownView): boolean => {
 				if (getTaskUnderCursor(this.app, view)) {
 					if (!checking) {
 						this.moveTaskToNoteWithFuzzySuggester(view);
@@ -61,9 +60,10 @@ export default class TaskMoverPlugin extends Plugin {
 		});
 
 		this.registerEvent(this.app.workspace.on('editor-menu', (menu) => {
-			const view: MarkdownView = this.app.workspace
+			const view = this.app.workspace
 				.getActiveViewOfType(MarkdownView);
 
+			if (!view) return;
 			if (!getTaskUnderCursor(this.app, view)) return;
 
 			const destinations = this.settings.destinationNotes
@@ -118,6 +118,8 @@ export default class TaskMoverPlugin extends Plugin {
 	 */
 	private moveTaskToNoteWithFuzzySuggester(view: MarkdownView) {
 		const currentFile = this.app.workspace.getActiveFile();
+		if (!currentFile) return;
+
 		const files: TFile[] = this.app.vault.getMarkdownFiles();
 		GenericSuggester.Suggest(
 			this.app,
@@ -130,8 +132,8 @@ export default class TaskMoverPlugin extends Plugin {
 			}),
 			files,
 		)
-		.then(file => this.apiV1.moveTaskToNote(view, file))
-		.catch(e => {});
+			.then(file => this.apiV1.moveTaskToNote(view, file))
+			.catch(_ => { });
 	}
 
 	/**
@@ -141,8 +143,10 @@ export default class TaskMoverPlugin extends Plugin {
 	 * @param view The current markdown view
 	 */
 	private moveTaskToNoteDestination(destination: DestinationNote, view: MarkdownView) {
-		const file: TFile = this.app.vault
+		const file = this.app.vault
 			.getFileByPath(destination.path);
+		if (!file) return;
+
 		this.apiV1.moveTaskToNote(view, file);
 	}
 }

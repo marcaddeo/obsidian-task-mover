@@ -1,5 +1,5 @@
 // @see https://github.com/liamcain/obsidian-periodic-notes/blob/main/src/ui/file-suggest.ts
-import { TAbstractFile, TFile } from "obsidian";
+import { TAbstractFile, TFile } from 'obsidian';
 import { TextInputSuggest } from "./TextInputSuggest";
 
 export class FileSuggest extends TextInputSuggest<TFile> {
@@ -11,7 +11,7 @@ export class FileSuggest extends TextInputSuggest<TFile> {
     abstractFiles.forEach((file: TAbstractFile) => {
       if (
         file instanceof TFile &&
-        file.extension === "md" &&
+        file.extension === 'md' &&
         file.path.toLowerCase().contains(lowerCaseInputStr)
       ) {
         files.push(file);
@@ -27,7 +27,7 @@ export class FileSuggest extends TextInputSuggest<TFile> {
 
   selectSuggestion(file: TFile): void {
     this.inputEl.value = file.path;
-    this.inputEl.trigger("input");
+    this.inputEl.trigger('input');
     this.close();
   }
 }

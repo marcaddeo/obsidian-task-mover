@@ -1,6 +1,18 @@
-// https://raw.githubusercontent.com/chhoumann/quickadd/master/src/gui/GenericSuggester/genericSuggester.ts
-import { FuzzySuggestModal } from "obsidian";
-import type { FuzzyMatch , App} from "obsidian";
+// @see https://raw.githubusercontent.com/chhoumann/quickadd/master/src/gui/GenericSuggester/genericSuggester.ts
+import { type FuzzyMatch, type App, FuzzySuggestModal } from 'obsidian';
+
+declare module 'obsidian' {
+	interface FuzzySuggestModal<T> {
+		chooser: {
+			values: {
+				item: string;
+				match: { score: number; matches: unknown[]; };
+			}[];
+			selectedItem: number;
+			[key: string]: unknown;
+		}
+	}
+}
 
 export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
 	private resolvePromise: (value: T) => void;
@@ -25,21 +37,13 @@ export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
 			this.rejectPromise = reject;
 		});
 
-		this.inputEl.addEventListener("keydown", (event: KeyboardEvent) => {
+		this.inputEl.addEventListener('keydown', (event: KeyboardEvent) => {
 			// chooser is undocumented & not officially a part of the Obsidian API, hence the precautions in using it.
-			if (event.code !== "Tab" || !("chooser" in this)) {
+			if (event.code !== 'Tab' || !('chooser' in this)) {
 				return;
 			}
 
-			const { values, selectedItem } = this.chooser as {
-				values: {
-					item: string;
-					match: { score: number; matches: unknown[]; };
-				}[];
-				selectedItem: number;
-				[key: string]: unknown;
-			};
-
+			const { values, selectedItem } = this.chooser;
 			const { value } = this.inputEl;
 			this.inputEl.value = values[selectedItem].item ?? value;
 		});
@@ -63,7 +67,7 @@ export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
 		super.selectSuggestion(value, evt);
 	}
 
-	onChooseItem(item: T, evt: MouseEvent | KeyboardEvent): void {
+	onChooseItem(item: T, _: MouseEvent | KeyboardEvent): void {
 		this.resolved = true;
 		this.resolvePromise(item);
 	}
@@ -71,6 +75,6 @@ export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
 	onClose() {
 		super.onClose();
 
-		if (!this.resolved) this.rejectPromise("no input given.");
+		if (!this.resolved) this.rejectPromise('no input given.');
 	}
 }

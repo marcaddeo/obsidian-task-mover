@@ -1,5 +1,4 @@
-import type { App, TFile } from 'obsidian';
-import { MarkdownView } from 'obsidian';
+import { type App, type TFile, MarkdownView } from 'obsidian';
 import type { TaskMoverApiV1 } from './TaskMoverApiV1';
 import { moveTaskToNote } from './moveTaskToNote'
 
