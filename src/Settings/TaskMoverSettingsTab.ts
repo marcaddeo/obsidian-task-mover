@@ -18,7 +18,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 		this.containerEl.addClass('task-mover-settings');
 
 		containerEl.createEl('p', {
-			text: 'Task Mover will add commands to the command palette, and optionally the editor context menu, to move tasks to each destination note entered below.' ,
+			text: 'Task Mover will add commands to the command palette, and optionally the editor context menu, to move tasks to each destination note entered below.',
 		});
 		containerEl.createEl('p', {
 			text: 'When a Task Mover command is executed, the task currently under the cursor and any child tasks will be moved to the bottom of the selected Destination Note.',
@@ -39,7 +39,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 						this.plugin.settings.destinationNotes.push({} as DestinationNote);
 						await this.plugin.saveSettings();
 						return this.display();
-					})
+					});
 			});
 
 		this.plugin.settings.destinationNotes.forEach((destination, index) => {
@@ -60,7 +60,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 
 							await this.plugin.saveSettings();
 							return this.display();
-						})
+						});
 				})
 				.addText((text) => {
 					text
@@ -70,10 +70,10 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 							const original: DestinationNote = this.plugin.settings.destinationNotes[index];
 
 							this.plugin.settings.destinationNotes[index] =
-							{ ...original, ...{ name: name } };
+								{ ...original, ...{ name: name } };
 
 							await this.plugin.saveSettings();
-						}, 250, true))
+						}, 250, true));
 				})
 				.addToggle((toggle) => {
 					toggle
@@ -82,8 +82,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 						.onChange(async (showInEditorContextMenu) => {
 							this.plugin.settings.destinationNotes[index].showInEditorContextMenu = showInEditorContextMenu;
 							await this.plugin.saveSettings();
-						})
-					;
+						});
 				})
 				.addExtraButton((button) => {
 					button

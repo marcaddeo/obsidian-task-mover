@@ -21,15 +21,15 @@ export default class TaskMoverPlugin extends Plugin {
 		this.slugger = new GithubSlugger();
 
 		// Add a 'Move Task to ___' command for each destination note.
-		this.settings.destinationNotes.forEach((destination: DestinationNote, index: number) => {
+		this.settings.destinationNotes.forEach((destination: DestinationNote) => {
 			const slug = this.slugger.slug(destination.name);
 
 			this.addCommand({
 				id: `move-task-to-${slug}`,
 				name: `Move task to ${destination.name} (MTT ${destination.name})`,
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView): boolean =>  {
+				editorCheckCallback: (checking: boolean, _: Editor, view: MarkdownView): boolean => {
 					const task = getTaskUnderCursor(this.app, view);
-					
+
 					if (task) {
 						if (!checking) {
 							this.moveTaskToNoteDestination(destination, view);
@@ -46,7 +46,7 @@ export default class TaskMoverPlugin extends Plugin {
 		this.addCommand({
 			id: 'move-task-to-file',
 			name: 'Move task to ... (MTTF)',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView): boolean => {
+			editorCheckCallback: (checking: boolean, _: Editor, view: MarkdownView): boolean => {
 				if (getTaskUnderCursor(this.app, view)) {
 					if (!checking) {
 						this.moveTaskToNoteWithFuzzySuggester(view);
@@ -132,8 +132,8 @@ export default class TaskMoverPlugin extends Plugin {
 			}),
 			files,
 		)
-		.then(file => this.apiV1.moveTaskToNote(view, file))
-		.catch(e => {});
+			.then(file => this.apiV1.moveTaskToNote(view, file))
+			.catch(_ => { });
 	}
 
 	/**

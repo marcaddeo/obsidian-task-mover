@@ -33,7 +33,7 @@ function* taskToFileLineStringWithChildren(task: Task): Generator<string> {
  *
  * @return The task under the cursor, or null if there is not one.
  */
-export const getTaskUnderCursor = function (app: App, view: MarkdownView): Task | null {
+export const getTaskUnderCursor = (app: App, view: MarkdownView): Task | null => {
 	const activeFilePath = view.file?.path;
 	if (!activeFilePath) return null;
 
@@ -57,8 +57,8 @@ export const moveTaskToNote = async (app: App, view: MarkdownView, destination: 
 		new Notice('Error finding task on current line');
 		return;
 	}
-	
-	const normalizedPath = await normalizePath(destination.path);
+
+	const normalizedPath = normalizePath(destination.path);
 	const destinationFile = app.vault.getFileByPath(normalizedPath);
 	if (!destinationFile) {
 		new Notice('There was an error getting the destination note path')
