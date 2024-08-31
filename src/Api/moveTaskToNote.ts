@@ -1,5 +1,4 @@
-import type { App, TFile } from 'obsidian';
-import { normalizePath, MarkdownView, Notice } from 'obsidian';
+import { type App, type TFile, normalizePath, MarkdownView, Notice } from 'obsidian';
 import { customAlphabet } from 'nanoid';
 import type { Task } from '../types';
 
