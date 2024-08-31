@@ -111,6 +111,11 @@ export default class TaskMoverPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	/**
+	 * Open a fuzzy file suggester to pick a file to move the task to.
+	 *
+	 * @param view The current markdown view
+	 */
 	private moveTaskToNoteWithFuzzySuggester(view: MarkdownView) {
 		const currentFile = this.app.workspace.getActiveFile();
 		const files: TFile[] = this.app.vault.getMarkdownFiles();
@@ -129,6 +134,12 @@ export default class TaskMoverPlugin extends Plugin {
 		.catch(e => {});
 	}
 
+	/**
+	 * Move task under cursor to destination note.
+	 *
+	 * @param destination The destination note to move the task to
+	 * @param view The current markdown view
+	 */
 	private moveTaskToNoteDestination(destination: DestinationNote, view: MarkdownView) {
 		const file: TFile = this.app.vault
 			.getFileByPath(destination.path);

@@ -2,6 +2,11 @@ import type { App, TFile } from 'obsidian';
 import { normalizePath, MarkdownView, Notice } from 'obsidian';
 import { customAlphabet } from 'nanoid';
 
+/**
+ * Convert a task to file line string, including its child tasks.
+ *
+ * @param task The task to convert to file line strings
+ */
 function* taskToFileLineStringWithChildren(task: object): Generator<string> {
 	yield task.toFileLineString();
 
@@ -10,6 +15,14 @@ function* taskToFileLineStringWithChildren(task: object): Generator<string> {
 	}
 }
 
+/**
+ * Get the task currently under the cursor.
+ *
+ * @param app The Obsidian app
+ * @param view The current markdown view
+ *
+ * @return The task under the cursor, or null if there is not one.
+ */
 export const getTaskUnderCursor = function (app: App, view: MarkdownView): object | null {
 	const activeFilePath: string = view.getFile().path;
 	const lineNumber: number = view.editor.getCursor().line;
@@ -20,9 +33,13 @@ export const getTaskUnderCursor = function (app: App, view: MarkdownView): objec
 }
 
 /**
- * Move the task under the cursor to the end of the destination file.
+ * Move the task under the cursor to the destination note, leaving a block
+ * link to the destination task in it's place.
+ *
+ * @param view The current markdown MarkdownView
+ * @param destination The destination file to move the task to.
  */
-export const moveTaskToNote = async (app: App, view: MarkdownView, destination: TFile): Promise<void> => {
+export const moveTaskToNote = async (app: App, view: MarkdownView, destination: TFile) => {
 	const task = getTaskUnderCursor(app, view);
 	if (!task) {
 		new Notice('Error finding task on current line');
