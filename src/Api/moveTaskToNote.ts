@@ -10,16 +10,20 @@ function* taskToFileLineStringWithChildren(task: object): Generator<string> {
 	}
 }
 
-/**
- * Move the task under the cursor to the end of the destination file.
- */
-export const moveTaskToNote = async (app: App, view: MarkdownView, destination: TFile): Promise<void> => {
+export const getTaskUnderCursor = function (app: App, view: MarkdownView): object | null {
 	const activeFilePath: string = view.getFile().path;
 	const lineNumber: number = view.editor.getCursor().line;
 
 	// Find the current task under the cursor.
 	const tasks: Array<object> = app.plugins.plugins['obsidian-tasks-plugin'].getTasks();
-	const task: object = tasks[tasks.findIndex(t => t.file.path === activeFilePath && t.lineNumber === lineNumber)];
+	return tasks[tasks.findIndex(t => t.file.path === activeFilePath && t.lineNumber === lineNumber)] ?? null;
+}
+
+/**
+ * Move the task under the cursor to the end of the destination file.
+ */
+export const moveTaskToNote = async (app: App, view: MarkdownView, destination: TFile): Promise<void> => {
+	const task = getTaskUnderCursor(app, view);
 	if (!task) {
 		new Notice('Error finding task on current line');
 		return;
@@ -36,13 +40,17 @@ export const moveTaskToNote = async (app: App, view: MarkdownView, destination: 
 	taskStrings = taskStrings.map(taskString => taskString.replace(task.indentation, ''));
 
 	// Append task(s) to destination file.
-	await app.vault.adapter.append(normalizedPath, ['', ...taskStrings].join('\n'));
+	await app.vault.append(
+		app.vault.getFileByPath(normalizedPath),
+		['', ...taskStrings].join('\n')
+	);
 
 	// Construct a block link to the parent task in the destination file.
 	const linktext: string = app.metadataCache.fileToLinktext(destination, normalizedPath);
 	const blockLink: string = `${task.indentation}${task.listMarker} [[${linktext}#^${blockLinkRef}|${task.description}]]\n`;
 
 	// Replace tasks(s) on current line with the block link to the task(s) in the destination file.
+	const lineNumber: number = view.editor.getCursor().line;
 	view.editor.replaceRange(
 		blockLink,
 		{ line: lineNumber, ch: 0 },

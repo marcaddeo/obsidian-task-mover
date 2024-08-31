@@ -16,8 +16,6 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 		containerEl.empty();
 		this.containerEl.addClass('task-mover-settings');
 
-		containerEl.createEl('h1', { text: 'Task Mover Settings' });
-
 		containerEl.createEl('p', {
 			text: 'Task Mover will add commands to the command palette, and optionally the editor context menu, to move tasks to each destination note entered below.' ,
 		});
