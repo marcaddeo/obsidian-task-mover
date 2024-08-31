@@ -1,5 +1,4 @@
-import type { App, TFile } from 'obsidian';
-import { MarkdownView } from 'obsidian';
+import { type TFile, MarkdownView } from 'obsidian';
 
 /**
  * Task Mover API v1 interface
@@ -12,5 +11,5 @@ export interface TaskMoverApiV1 {
 	 * @param view The current markdown MarkdownView
 	 * @param destination The destination file to move the task to.
 	 */
-	moveTaskToNote: async (view: MarkdownView, destination: TFile);
+	moveTaskToNote(view: MarkdownView, destination: TFile): Promise<void>;
 }

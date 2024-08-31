@@ -1,6 +1,19 @@
 // https://raw.githubusercontent.com/chhoumann/quickadd/master/src/gui/GenericSuggester/genericSuggester.ts
 import { FuzzySuggestModal } from "obsidian";
-import type { FuzzyMatch , App} from "obsidian";
+import type { FuzzyMatch, App } from "obsidian";
+
+declare module 'obsidian' {
+	interface FuzzySuggestModal<T> {
+		chooser: {
+			values: {
+				item: string;
+				match: { score: number; matches: unknown[]; };
+			}[];
+			selectedItem: number;
+			[key: string]: unknown;
+		}
+	}
+}
 
 export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
 	private resolvePromise: (value: T) => void;
@@ -31,15 +44,7 @@ export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
 				return;
 			}
 
-			const { values, selectedItem } = this.chooser as {
-				values: {
-					item: string;
-					match: { score: number; matches: unknown[]; };
-				}[];
-				selectedItem: number;
-				[key: string]: unknown;
-			};
-
+			const { values, selectedItem } = this.chooser;
 			const { value } = this.inputEl;
 			this.inputEl.value = values[selectedItem].item ?? value;
 		});

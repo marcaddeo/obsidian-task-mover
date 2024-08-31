@@ -1,6 +1,7 @@
-import { debounce, App, PluginSettingTab, Setting } from 'obsidian';
-import { TaskMoverPlugin } from '../main';
+import { debounce, App, PluginSettingTab, Setting, ButtonComponent } from 'obsidian';
+import TaskMoverPlugin from '../main';
 import { FileSuggest } from '../ui/FileSuggest';
+import type { DestinationNote } from '../types';
 
 export class TaskMoverSettingsTab extends PluginSettingTab {
 	plugin: TaskMoverPlugin;
@@ -50,7 +51,9 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 						.setValue(destination.path)
 						.onChange(async (path: string) => {
 							const original: DestinationNote = this.plugin.settings.destinationNotes[index];
-							const name: string = original.name?.length ? original.name : app.vault.getFileByPath(path).basename;
+							const name = original.name?.length ? original.name : this.app.vault.getFileByPath(path)?.basename;
+
+							if (!name) throw new Error('Could not determine destination note name.');
 
 							this.plugin.settings.destinationNotes[index] =
 								{ ...original, ...{ path: path, name: name } };
@@ -70,7 +73,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 							{ ...original, ...{ name: name } };
 
 							await this.plugin.saveSettings();
-						}), 250, true)
+						}, 250, true))
 				})
 				.addToggle((toggle) => {
 					toggle

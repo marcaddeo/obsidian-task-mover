@@ -1,3 +1,5 @@
+import type { TFile } from 'obsidian';
+
 export interface DestinationNote {
 	path: string;
 	name: string;
@@ -10,4 +12,16 @@ export interface TaskMoverPluginSettings {
 
 export const DEFAULT_SETTINGS: TaskMoverPluginSettings = {
 	destinationNotes: [],
+}
+
+// An incomplete representation of as Task from the Tasks plugin.
+export interface Task {
+	toFileLineString: () => string;
+	children: Task[];
+	file: TFile;
+	lineNumber: number;
+	blockLink: string;
+	indentation: string;
+	listMarker: string;
+	description: string;
 }
