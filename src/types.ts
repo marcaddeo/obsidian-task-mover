@@ -14,7 +14,7 @@ export const DEFAULT_SETTINGS: TaskMoverPluginSettings = {
 	destinationNotes: [],
 }
 
-// An incomplete representation of as Task from the Tasks plugin.
+// An incomplete representation of a Task from the Tasks plugin.
 export interface Task {
 	toFileLineString: () => string;
 	children: Task[];
