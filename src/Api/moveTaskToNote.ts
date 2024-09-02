@@ -3,13 +3,13 @@ import { customAlphabet } from 'nanoid';
 import type { Task } from '../types';
 
 declare module 'obsidian' {
-	interface App {
-		plugins: {
-			plugins: Record<string, {
-				getTasks: () => Task[];
-			}>
-		};
-	}
+  interface App {
+    plugins: {
+      plugins: Record<string, {
+        getTasks: () => Task[];
+      }>
+    };
+  }
 }
 
 /**
@@ -18,11 +18,11 @@ declare module 'obsidian' {
  * @param task The task to convert to file line strings
  */
 function* taskToFileLineStringWithChildren(task: Task): Generator<string> {
-	yield task.toFileLineString();
+  yield task.toFileLineString();
 
-	for (const child of task.children) {
-		yield* taskToFileLineStringWithChildren(child);
-	}
+  for (const child of task.children) {
+    yield* taskToFileLineStringWithChildren(child);
+  }
 }
 
 /**
@@ -34,14 +34,14 @@ function* taskToFileLineStringWithChildren(task: Task): Generator<string> {
  * @return The task under the cursor, or null if there is not one.
  */
 export const getTaskUnderCursor = (app: App, view: MarkdownView): Task | null => {
-	const activeFilePath = view.file?.path;
-	if (!activeFilePath) return null;
+  const activeFilePath = view.file?.path;
+  if (!activeFilePath) return null;
 
-	const lineNumber: number = view.editor.getCursor().line;
+  const lineNumber: number = view.editor.getCursor().line;
 
-	// Find the current task under the cursor.
-	const tasks: Array<Task> = app.plugins.plugins['obsidian-tasks-plugin'].getTasks();
-	return tasks[tasks.findIndex(t => t.file.path === activeFilePath && t.lineNumber === lineNumber)] ?? null;
+  // Find the current task under the cursor.
+  const tasks: Array<Task> = app.plugins.plugins['obsidian-tasks-plugin'].getTasks();
+  return tasks[tasks.findIndex(t => t.file.path === activeFilePath && t.lineNumber === lineNumber)] ?? null;
 }
 
 /**
@@ -52,40 +52,40 @@ export const getTaskUnderCursor = (app: App, view: MarkdownView): Task | null =>
  * @param destination The destination file to move the task to.
  */
 export const moveTaskToNote = async (app: App, view: MarkdownView, destination: TFile) => {
-	const task = getTaskUnderCursor(app, view);
-	if (!task) {
-		new Notice('Error finding task on current line');
-		return;
-	}
+  const task = getTaskUnderCursor(app, view);
+  if (!task) {
+    new Notice('Error finding task on current line');
+    return;
+  }
 
-	const normalizedPath = normalizePath(destination.path);
-	const destinationFile = app.vault.getFileByPath(normalizedPath);
-	if (!destinationFile) {
-		new Notice('There was an error getting the destination note path')
-		return;
-	}
+  const normalizedPath = normalizePath(destination.path);
+  const destinationFile = app.vault.getFileByPath(normalizedPath);
+  if (!destinationFile) {
+    new Notice('There was an error getting the destination note path')
+    return;
+  }
 
-	const blockLinkRef = customAlphabet('abcdefghijklmnopqrstuvwz0123456789', 6)();
-	// Append the block link reference onto the original task.
-	task.blockLink = ` ^${blockLinkRef}`;
+  const blockLinkRef = customAlphabet('abcdefghijklmnopqrstuvwz0123456789', 6)();
+  // Append the block link reference onto the original task.
+  task.blockLink = ` ^${blockLinkRef}`;
 
-	// Generate markdown to append to destination file.
-	let taskStrings: Array<string> = [...taskToFileLineStringWithChildren(task)];
-	// Remove the first level of indentation from every task.
-	taskStrings = taskStrings.map(taskString => taskString.replace(task.indentation, ''));
+  // Generate markdown to append to destination file.
+  let taskStrings: Array<string> = [...taskToFileLineStringWithChildren(task)];
+  // Remove the first level of indentation from every task.
+  taskStrings = taskStrings.map(taskString => taskString.replace(task.indentation, ''));
 
-	// Append task(s) to destination file.
-	await app.vault.append(destinationFile, ['', ...taskStrings].join('\n'));
+  // Append task(s) to destination file.
+  await app.vault.append(destinationFile, ['', ...taskStrings].join('\n'));
 
-	// Construct a block link to the parent task in the destination file.
-	const linktext: string = app.metadataCache.fileToLinktext(destination, normalizedPath);
-	const blockLink = `${task.indentation}${task.listMarker} [[${linktext}#^${blockLinkRef}|${task.description}]]\n`;
+  // Construct a block link to the parent task in the destination file.
+  const linktext: string = app.metadataCache.fileToLinktext(destination, normalizedPath);
+  const blockLink = `${task.indentation}${task.listMarker} [[${linktext}#^${blockLinkRef}|${task.description}]]\n`;
 
-	// Replace tasks(s) on current line with the block link to the task(s) in the destination file.
-	const lineNumber: number = view.editor.getCursor().line;
-	view.editor.replaceRange(
-		blockLink,
-		{ line: lineNumber, ch: 0 },
-		{ line: (task.children.length ? (task.children.at(-1) as Task).lineNumber : lineNumber) + 1, ch: 0 }
-	);
+  // Replace tasks(s) on current line with the block link to the task(s) in the destination file.
+  const lineNumber: number = view.editor.getCursor().line;
+  view.editor.replaceRange(
+    blockLink,
+    { line: lineNumber, ch: 0 },
+    { line: (task.children.length ? (task.children.at(-1) as Task).lineNumber : lineNumber) + 1, ch: 0 }
+  );
 };

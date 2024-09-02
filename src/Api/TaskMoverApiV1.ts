@@ -4,12 +4,12 @@ import { type TFile, MarkdownView } from 'obsidian';
  * Task Mover API v1 interface
  */
 export interface TaskMoverApiV1 {
-	/**
-	 * Move the task under the cursor to the destination note, leaving a block
-	 * link to the destination task in it's place.
-	 *
-	 * @param view The current markdown MarkdownView
-	 * @param destination The destination file to move the task to.
-	 */
-	moveTaskToNote(view: MarkdownView, destination: TFile): Promise<void>;
+  /**
+   * Move the task under the cursor to the destination note, leaving a block
+   * link to the destination task in it's place.
+   *
+   * @param view The current markdown MarkdownView
+   * @param destination The destination file to move the task to.
+   */
+  moveTaskToNote(view: MarkdownView, destination: TFile): Promise<void>;
 }
