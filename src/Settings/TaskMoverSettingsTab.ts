@@ -1,7 +1,7 @@
-import { debounce, App, PluginSettingTab, Setting, ButtonComponent } from 'obsidian';
-import TaskMoverPlugin from '../main';
-import { FileSuggest } from '../ui/FileSuggest';
-import type { DestinationNote } from '../types';
+import { debounce, App, PluginSettingTab, Setting, ButtonComponent } from "obsidian";
+import TaskMoverPlugin from "../main";
+import { FileSuggest } from "../ui/FileSuggest";
+import type { DestinationNote } from "../types";
 
 export class TaskMoverSettingsTab extends PluginSettingTab {
   plugin: TaskMoverPlugin;
@@ -15,25 +15,25 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
     const { containerEl } = this;
 
     containerEl.empty();
-    this.containerEl.addClass('task-mover-settings');
+    this.containerEl.addClass("task-mover-settings");
 
-    containerEl.createEl('p', {
-      text: 'Task Mover will add commands to the command palette, and optionally the editor context menu, to move tasks to each destination note entered below.',
+    containerEl.createEl("p", {
+      text: "Task Mover will add commands to the command palette, and optionally the editor context menu, to move tasks to each destination note entered below.",
     });
-    containerEl.createEl('p', {
-      text: 'When a Task Mover command is executed, the task currently under the cursor and any child tasks will be moved to the bottom of the selected Destination Note.',
+    containerEl.createEl("p", {
+      text: "When a Task Mover command is executed, the task currently under the cursor and any child tasks will be moved to the bottom of the selected Destination Note.",
     });
-    containerEl.createEl('p', {
-      text: 'When a task is moved, a block link to the moved task is left in its place.',
+    containerEl.createEl("p", {
+      text: "When a task is moved, a block link to the moved task is left in its place.",
     });
 
     new Setting(containerEl)
-      .setName('Destination Notes')
-      .setDesc('Configure which notes will be available as move destinations. The Destination Name field can be overridden to customize the move command in the palette. Each Desination Note can optionally be displayed in the editor context menu as well.')
+      .setName("Destination Notes")
+      .setDesc("Configure which notes will be available as move destinations. The Destination Name field can be overridden to customize the move command in the palette. Each Desination Note can optionally be displayed in the editor context menu as well.")
       .addButton((button: ButtonComponent) => {
         button
-          .setTooltip('Add destination note')
-          .setButtonText('+')
+          .setTooltip("Add destination note")
+          .setButtonText("+")
           .setCta()
           .onClick(async () => {
             this.plugin.settings.destinationNotes.push({} as DestinationNote);
@@ -44,16 +44,16 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
 
     this.plugin.settings.destinationNotes.forEach((destination, index) => {
       new Setting(containerEl)
-        .setClass('task-mover-destination-note-container')
+        .setClass("task-mover-destination-note-container")
         .addSearch((search) => {
           new FileSuggest(this.app, search.inputEl);
-          search.setPlaceholder('Note')
+          search.setPlaceholder("Note")
             .setValue(destination.path)
             .onChange(async (path: string) => {
               const original: DestinationNote = this.plugin.settings.destinationNotes[index];
               const name = original.name?.length ? original.name : this.app.vault.getFileByPath(path)?.basename;
 
-              if (!name) throw new Error('Could not determine destination note name.');
+              if (!name) throw new Error("Could not determine destination note name.");
 
               this.plugin.settings.destinationNotes[index] =
                 { ...original, ...{ path: path, name: name } };
@@ -64,7 +64,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
         })
         .addText((text) => {
           text
-            .setPlaceholder('Destination Name')
+            .setPlaceholder("Destination Name")
             .setValue(this.plugin.settings.destinationNotes[index].name)
             .onChange(debounce(async (name: string) => {
               const original: DestinationNote = this.plugin.settings.destinationNotes[index];
@@ -77,7 +77,7 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
         })
         .addToggle((toggle) => {
           toggle
-            .setTooltip('Show in editor context menu')
+            .setTooltip("Show in editor context menu")
             .setValue(this.plugin.settings.destinationNotes[index].showInEditorContextMenu)
             .onChange(async (showInEditorContextMenu) => {
               this.plugin.settings.destinationNotes[index].showInEditorContextMenu = showInEditorContextMenu;
@@ -86,8 +86,8 @@ export class TaskMoverSettingsTab extends PluginSettingTab {
         })
         .addExtraButton((button) => {
           button
-            .setIcon('cross')
-            .setTooltip('Delete')
+            .setIcon("cross")
+            .setTooltip("Delete")
             .onClick(async () => {
               this.plugin.settings.destinationNotes.splice(index, 1);
               await this.plugin.saveSettings();

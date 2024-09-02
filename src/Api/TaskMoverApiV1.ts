@@ -1,4 +1,4 @@
-import { type TFile, MarkdownView } from 'obsidian';
+import { type TFile, MarkdownView } from "obsidian";
 
 /**
  * Task Mover API v1 interface

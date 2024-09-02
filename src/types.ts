@@ -1,4 +1,4 @@
-import type { TFile } from 'obsidian';
+import type { TFile } from "obsidian";
 
 export interface DestinationNote {
   path: string;

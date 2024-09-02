@@ -1,5 +1,5 @@
 // @see https://github.com/liamcain/obsidian-periodic-notes/blob/main/src/ui/suggest.ts
-import { type ISuggestOwner, Scope } from 'obsidian';
+import { type ISuggestOwner, Scope } from "obsidian";
 
 class Suggest<T> {
   private owner: ISuggestOwner<T>;
@@ -12,28 +12,28 @@ class Suggest<T> {
     this.owner = owner;
     this.containerEl = containerEl;
 
-    containerEl.on('click', '.suggestion-item', this.onSuggestionClick.bind(this));
+    containerEl.on("click", ".suggestion-item", this.onSuggestionClick.bind(this));
     containerEl.on(
-      'mousemove',
-      '.suggestion-item',
+      "mousemove",
+      ".suggestion-item",
       this.onSuggestionMouseover.bind(this)
     );
 
-    scope.register([], 'ArrowUp', (event) => {
+    scope.register([], "ArrowUp", (event) => {
       if (!event.isComposing) {
         this.setSelectedItem(this.selectedItem - 1, true);
         return false;
       }
     });
 
-    scope.register([], 'ArrowDown', (event) => {
+    scope.register([], "ArrowDown", (event) => {
       if (!event.isComposing) {
         this.setSelectedItem(this.selectedItem + 1, true);
         return false;
       }
     });
 
-    scope.register([], 'Enter', (event) => {
+    scope.register([], "Enter", (event) => {
       if (!event.isComposing) {
         this.useSelectedItem(event);
         return false;
@@ -59,7 +59,7 @@ class Suggest<T> {
     const suggestionEls: HTMLDivElement[] = [];
 
     values.forEach((value) => {
-      const suggestionEl = this.containerEl.createDiv('suggestion-item');
+      const suggestionEl = this.containerEl.createDiv("suggestion-item");
       this.owner.renderSuggestion(value, suggestionEl);
       suggestionEls.push(suggestionEl);
     });
@@ -81,8 +81,8 @@ class Suggest<T> {
     const prevSelectedSuggestion = this.suggestions[this.selectedItem];
     const selectedSuggestion = this.suggestions[normalizedIndex];
 
-    prevSelectedSuggestion?.removeClass('is-selected');
-    selectedSuggestion?.addClass('is-selected');
+    prevSelectedSuggestion?.removeClass("is-selected");
+    selectedSuggestion?.addClass("is-selected");
 
     this.selectedItem = normalizedIndex;
 

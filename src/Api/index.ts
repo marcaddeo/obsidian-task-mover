@@ -1,6 +1,6 @@
-import { type App, type TFile, MarkdownView } from 'obsidian';
-import type { TaskMoverApiV1 } from './TaskMoverApiV1';
-import { moveTaskToNote } from './moveTaskToNote'
+import { type App, type TFile, MarkdownView } from "obsidian";
+import type { TaskMoverApiV1 } from "./TaskMoverApiV1";
+import { moveTaskToNote } from "./moveTaskToNote"
 
 /**
  * Factory method for API v1

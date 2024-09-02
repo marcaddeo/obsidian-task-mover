@@ -1,8 +1,8 @@
-import { type App, type TFile, normalizePath, MarkdownView, Notice } from 'obsidian';
-import { customAlphabet } from 'nanoid';
-import type { Task } from '../types';
+import { type App, type TFile, normalizePath, MarkdownView, Notice } from "obsidian";
+import { customAlphabet } from "nanoid";
+import type { Task } from "../types";
 
-declare module 'obsidian' {
+declare module "obsidian" {
   interface App {
     plugins: {
       plugins: Record<string, {
@@ -40,7 +40,7 @@ export const getTaskUnderCursor = (app: App, view: MarkdownView): Task | null =>
   const lineNumber: number = view.editor.getCursor().line;
 
   // Find the current task under the cursor.
-  const tasks: Array<Task> = app.plugins.plugins['obsidian-tasks-plugin'].getTasks();
+  const tasks: Array<Task> = app.plugins.plugins["obsidian-tasks-plugin"].getTasks();
   return tasks[tasks.findIndex(t => t.file.path === activeFilePath && t.lineNumber === lineNumber)] ?? null;
 }
 
@@ -54,7 +54,7 @@ export const getTaskUnderCursor = (app: App, view: MarkdownView): Task | null =>
 export const moveTaskToNote = async (app: App, view: MarkdownView, destination: TFile) => {
   const task = getTaskUnderCursor(app, view);
   if (!task) {
-    new Notice('Error finding task on current line');
+    new Notice("Error finding task on current line");
     return;
   }
 

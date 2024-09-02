@@ -1,7 +1,7 @@
 // @see https://raw.githubusercontent.com/chhoumann/quickadd/master/src/gui/GenericSuggester/genericSuggester.ts
-import { type FuzzyMatch, type App, FuzzySuggestModal } from 'obsidian';
+import { type FuzzyMatch, type App, FuzzySuggestModal } from "obsidian";
 
-declare module 'obsidian' {
+declare module "obsidian" {
   interface FuzzySuggestModal<T> {
     chooser: {
       values: {
@@ -37,9 +37,9 @@ export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
       this.rejectPromise = reject;
     });
 
-    this.inputEl.addEventListener('keydown', (event: KeyboardEvent) => {
+    this.inputEl.addEventListener("keydown", (event: KeyboardEvent) => {
       // chooser is undocumented & not officially a part of the Obsidian API, hence the precautions in using it.
-      if (event.code !== 'Tab' || !('chooser' in this)) {
+      if (event.code !== "Tab" || !("chooser" in this)) {
         return;
       }
 
@@ -75,6 +75,6 @@ export default class GenericSuggester<T> extends FuzzySuggestModal<T> {
   onClose() {
     super.onClose();
 
-    if (!this.resolved) this.rejectPromise('no input given.');
+    if (!this.resolved) this.rejectPromise("no input given.");
   }
 }

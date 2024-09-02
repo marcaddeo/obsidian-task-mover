@@ -1,11 +1,11 @@
-import { Editor, MarkdownView, Plugin, TFile } from 'obsidian';
-import GithubSlugger from 'github-slugger'
-import { TaskMoverSettingsTab } from './Settings/TaskMoverSettingsTab'
-import { DEFAULT_SETTINGS, type DestinationNote, type TaskMoverPluginSettings } from 'types';
-import { taskMoverApiV1 } from './Api';
-import { TaskMoverApiV1 } from './Api/TaskMoverApiV1';
-import { getTaskUnderCursor } from './Api/moveTaskToNote';
-import GenericSuggester from './ui/GenericSuggester';
+import { Editor, MarkdownView, Plugin, TFile } from "obsidian";
+import GithubSlugger from "github-slugger"
+import { TaskMoverSettingsTab } from "./Settings/TaskMoverSettingsTab"
+import { DEFAULT_SETTINGS, type DestinationNote, type TaskMoverPluginSettings } from "types";
+import { taskMoverApiV1 } from "./Api";
+import { TaskMoverApiV1 } from "./Api/TaskMoverApiV1";
+import { getTaskUnderCursor } from "./Api/moveTaskToNote";
+import GenericSuggester from "./ui/GenericSuggester";
 
 export default class TaskMoverPlugin extends Plugin {
   settings: TaskMoverPluginSettings;
@@ -20,7 +20,7 @@ export default class TaskMoverPlugin extends Plugin {
 
     this.slugger = new GithubSlugger();
 
-    // Add a 'Move Task to ___' command for each destination note.
+    // Add a "Move Task to ___" command for each destination note.
     this.settings.destinationNotes.forEach((destination: DestinationNote) => {
       const slug = this.slugger.slug(destination.name);
 
@@ -44,8 +44,8 @@ export default class TaskMoverPlugin extends Plugin {
     })
 
     this.addCommand({
-      id: 'move-task-to-file',
-      name: 'Move task to ... (MTTF)',
+      id: "move-task-to-file",
+      name: "Move task to ... (MTTF)",
       editorCheckCallback: (checking: boolean, _: Editor, view: MarkdownView): boolean => {
         if (getTaskUnderCursor(this.app, view)) {
           if (!checking) {
@@ -59,7 +59,7 @@ export default class TaskMoverPlugin extends Plugin {
       }
     });
 
-    this.registerEvent(this.app.workspace.on('editor-menu', (menu) => {
+    this.registerEvent(this.app.workspace.on("editor-menu", (menu) => {
       const view = this.app.workspace
         .getActiveViewOfType(MarkdownView);
 
@@ -76,7 +76,7 @@ export default class TaskMoverPlugin extends Plugin {
 
       menu.addItem((item) => {
         item
-          .setTitle('Move task to ...')
+          .setTitle("Move task to ...")
           .onClick(() => {
             this.moveTaskToNoteWithFuzzySuggester(view);
           });
