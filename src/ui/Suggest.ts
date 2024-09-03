@@ -1,7 +1,7 @@
 // @see https://github.com/liamcain/obsidian-periodic-notes/blob/main/src/ui/suggest.ts
 import { type ISuggestOwner, Scope } from "obsidian";
 
-class Suggest<T> {
+export class Suggest<T> {
   private owner: ISuggestOwner<T>;
   private values: T[];
   private suggestions: HTMLDivElement[];
