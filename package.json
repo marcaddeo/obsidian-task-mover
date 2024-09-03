@@ -1,6 +1,6 @@
 {
   "name": "obsidian-task-mover",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Facilitate the moving of tasks",
   "main": "main.js",
   "scripts": {
